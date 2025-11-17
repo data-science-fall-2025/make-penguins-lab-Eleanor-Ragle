@@ -15,8 +15,8 @@ The Palmer Archipelago Penguins Data is a really cool alternative to the famous 
 
 I made a pairs plot for the penguins data, and here it is:
 
-  ![](../output/penguin_pairs.png)\ 
-  
+![](../output/penguin_pairs.png) 
+
 When I ran a simple random forest classifier using just the bill measurements with 100 trees in the ensemble, I estimated that this classifier has a general accuracy of the following:
 
 ```{r, message = FALSE}
