@@ -1,0 +1,88 @@
+
+R version 4.5.1 (2025-06-13) -- "Great Square Root"
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: aarch64-apple-darwin20
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> ##############
+> ## Synopsis: Try out a basic classifier on the penguins using tidymodels
+> ## Author: David Gerard
+> ##############
+> 
+> library(tidymodels)
+── Attaching packages ────────────────────────────────────── tidymodels 1.4.1 ──
+✔ broom        1.0.9     ✔ recipes      1.3.1
+✔ dials        1.4.2     ✔ rsample      1.3.1
+✔ dplyr        1.1.4     ✔ tailor       0.1.0
+✔ ggplot2      4.0.0     ✔ tidyr        1.3.1
+✔ infer        1.0.9     ✔ tune         2.0.1
+✔ modeldata    1.5.1     ✔ workflows    1.3.0
+✔ parsnip      1.3.3     ✔ workflowsets 1.1.1
+✔ purrr        1.1.0     ✔ yardstick    1.3.2
+── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
+✖ purrr::discard() masks scales::discard()
+✖ dplyr::filter()  masks stats::filter()
+✖ dplyr::lag()     masks stats::lag()
+✖ recipes::step()  masks stats::step()
+> library(readr)
+
+Attaching package: ‘readr’
+
+The following object is masked from ‘package:yardstick’:
+
+    spec
+
+The following object is masked from ‘package:scales’:
+
+    col_factor
+
+> library(palmerpenguins)
+
+Attaching package: ‘palmerpenguins’
+
+The following object is masked from ‘package:modeldata’:
+
+    penguins
+
+The following objects are masked from ‘package:datasets’:
+
+    penguins, penguins_raw
+
+> data("penguins")
+> set.seed(1)
+> 
+> pen_split <- initial_split(penguins)
+> pen_training <- training(pen_split)
+> pen_testing <- testing(pen_split)
+> 
+> rand_forest(trees = 100, mode = "classification") %>%
++   set_engine("randomForest") %>%
++   fit(species ~ bill_length_mm + bill_depth_mm,
++       data = pen_training) ->
++   pen_mod
+> 
+> ## Estimate accuracy
+> predict(pen_mod, pen_testing) %>%
++   bind_cols(pen_testing) %>%
++   metrics(truth = species, estimate = .pred_class) %>%
++   write_csv(path = "./output/penguin_class.csv")
+Warning message:
+The `path` argument of `write_csv()` is deprecated as of readr 1.4.0.
+ℹ Please use the `file` argument instead. 
+> 
+> proc.time()
+   user  system elapsed 
+  3.379   0.299   3.943 

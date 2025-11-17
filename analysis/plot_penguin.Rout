@@ -1,0 +1,100 @@
+
+R version 4.5.1 (2025-06-13) -- "Great Square Root"
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: aarch64-apple-darwin20
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> ##############
+> ## Synopsis: Make a pairs plot of the famous penguins dataset
+> ## Author: David Gerard
+> ##############
+> 
+> library(tidyverse)
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   4.0.0     ✔ tibble    3.3.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.1.0     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+> library(GGally)
+> library(palmerpenguins)
+
+Attaching package: ‘palmerpenguins’
+
+The following objects are masked from ‘package:datasets’:
+
+    penguins, penguins_raw
+
+> data("penguins")
+> 
+> my_density <- function(data, mapping, ...) {
++   ggplot(data, mapping) +
++     geom_density()
++ }
+> 
+> penguins %>%
++   rename(`Bill Length (mm)` = bill_length_mm,
++          `Bill Depth (mm)` = bill_depth_mm,
++          `Flipper Length (mm)` = flipper_length_mm,
++          `Body Mass (g)` = body_mass_g) %>%
++ ggpairs(columns = c("Bill Length (mm)", "Bill Depth (mm)",
++                     "Flipper Length (mm)", "Body Mass (g)"),
++         upper = NULL,
++         diag = list(continuous = my_density),
++         mapping = aes(color = species)
++ ) +
++   theme_bw() +
++   theme(strip.background = element_rect(fill = "white")) +
++   scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) ->
++   pl
+> 
+> png(file = "./output/penguin_pairs.png",
++     width = 700,
++     height = 700,
++     family = "Times")
+> pl
+Warning messages:
+1: Removed 2 rows containing non-finite outside the scale range
+(`stat_density()`). 
+2: Removed 2 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+3: Removed 2 rows containing non-finite outside the scale range
+(`stat_density()`). 
+4: Removed 2 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+5: Removed 2 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+6: Removed 2 rows containing non-finite outside the scale range
+(`stat_density()`). 
+7: Removed 2 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+8: Removed 2 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+9: Removed 2 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+10: Removed 2 rows containing non-finite outside the scale range
+(`stat_density()`). 
+> dev.off()
+null device 
+          1 
+> 
+> proc.time()
+   user  system elapsed 
+  4.412   0.707   5.937 
